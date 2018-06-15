@@ -1,0 +1,66 @@
+centos7安装Lamp环境
+
+1,安装apache
+yum install httpd
+
+可能会用到的：
+
+systemctl start httpd.service #启动apache
+
+systemctl stop httpd.service #停止apache
+
+systemctl restart httpd.service #重启apache
+
+systemctl enable httpd.service #设置apache开机启动
+
+重启服务， systemctl restart httpd.service 
+
+输入localhost  出现页面，访问到apache，就OK
+
+2. 安装mysql
+
+由于yum源上没有mysql-server。所以必须去官网下载，这里 我们用wget命令，直接获取
+
+# wget http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm
+
+# rpm -ivh mysql-community-release-el7-5.noarch.rpm
+
+# yum install mysql-community-server
+
+安装完成后重启mysql,  systemctl restarat mysqld.service
+
+初入安装 root用户没有密码：
+
+[root@linuxidc-web linuxidc]# mysql -u root。
+
+#设置msyql密码为 123456
+mysql> set password for 'root'@'localhost' =password('123456');
+
+#远程连接设置，所有以root账号连接的远程用户，设其密码为 123456
+mysql> grant all privileges on *.* to root@'%'identified by '123456';
+
+#更新权限
+mysql>flush privileges; 
+
+3.  安装php
+
+yum install php
+
+#安装PHP组件，使PHP支持mysql
+yum install php-mysql php-gd libjpeg* php-ldap php-odbc php-pear php-xml php-xmlrpc php-mbstring php-bcmath php-mhash
+
+
+#重启对应服务
+systemctl restart mysqld.service
+systemctl restart httpd.service
+
+以上 安装 apahce 、mysql 、php  安装完毕。
+
+查看安装环境版本：
+
+cd  /var/www/html  ，新建index.php文件，输入：
+
+<?php
+    phpinfo();
+           
+最终查看为：php版本：
