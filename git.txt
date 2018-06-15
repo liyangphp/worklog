@@ -1,0 +1,72 @@
+1,服务器端配置git
+adduser git //添加git用户
+passwd git //添加git用户的密码
+su git //切换git用户
+mkdir .ssh && chmod 700 .ssh //创建.ssh文件
+touch .ssh/authorized_keys && chmod 600 .ssh/authorized_keys //创建authorized_keys文件
+
+2，客户端（我这里直接使用的是mac pro）
+打开mac pro 的终端
+查看：ls -la
+看到.ssh文件
+cd .ssh  //切换文件.ssh
+ls
+id_rsa       known_hosts            id_rsa.pub
+如果没有看到这三个文件 请使用ssh-keygen这个命令
+再次查看
+就会有了
+使用下面命令，密码登录进去
+scp id_rsa.pub root@186.187.147.156:/home/git/.ssh
+这样子就让文件直接到了服务器端
+
+3，服务器处理
+cd /home/git/.ssh
+进入.ssh文件夹中
+cat id_rsa.john.pub >> authorized_keys //一行一行的写入
+开始创建服务器端仓库
+cd ..
+mkdir opt
+cd opt
+mkdir project.git
+cd project.git
+git init --bare
+到这里服务器端的仓库创建起来的
+
+4，回到客户端
+mkdir myproject
+cd myproject
+git clone root@186.187.147.156:/home/git/opt/project.git
+cd project
+git add .
+git commit -m '这是第一次提交'
+git push origin master
+
+问题是我们提交的是裸仓并不是仓库所以我们看不到代码
+这个时候我们必须要用git的钩子
+在服务器端进入cd project.git
+里面会有hooks
+cd hooks
+创建vim post-receive
+代码如下
+编辑如下代码
+#!/bin/bash
+git --work-tree=/var/www/shop checkout --force
+
+chmod -R 777 /home/code/shop.git/
+
+chmod -R 777 /var/www/
+
+将这个文件的权限编辑成755 
+chmod -R 755 post-receive
+这样的话提交的代码都会到www/shop中
+
+我们再来说一下裸仓。
+裸仓是看不到代码的，
+如果你使用的是git init <仓库名>
+那么设置允许远程接收文件
+git config receive.denyCurrentBranch ignore
+
+Git 中一些问题 : refusing to update checked out branch
+git config --bool core.bare true 这个便可以解决你的问题
+好了。不说了自己参详，仅提供参考。
+
