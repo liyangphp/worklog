@@ -7,6 +7,7 @@ mkdir .ssh && chmod 700 .ssh //创建.ssh文件
 touch .ssh/authorized_keys && chmod 600 .ssh/authorized_keys //创建authorized_keys文件
 
 2，客户端（我这里直接使用的是mac pro）
+（如果是windows的话，在C:\Users\你的用户名\.ssh）
 打开mac pro 的终端
 查看：ls -la
 看到.ssh文件
