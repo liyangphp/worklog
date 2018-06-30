@@ -2,6 +2,7 @@
 adduser git //添加git用户
 passwd git //添加git用户的密码
 su git //切换git用户
+cd /home/git //进入git目录
 mkdir .ssh && chmod 700 .ssh //创建.ssh文件
 touch .ssh/authorized_keys && chmod 600 .ssh/authorized_keys //创建authorized_keys文件
 
